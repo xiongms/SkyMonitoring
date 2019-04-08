@@ -48,7 +48,7 @@ public class NoteDaoHelper {
     }
 
     public void insertList(List<TcNote> notes) {
-        WriteDataBaseAccess.shareInstance(context).insertData(notes);
+        WriteDataBaseAccess.shareInstance(context).insertDatas(notes);
         //paNoteDao.insertInTx(notes);
     }
 

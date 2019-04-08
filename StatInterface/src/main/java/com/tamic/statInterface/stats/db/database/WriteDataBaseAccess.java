@@ -13,7 +13,7 @@ import android.database.sqlite.SQLiteStatement;
 
 import com.tamic.statinterface.stats.db.TcNote;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class WriteDataBaseAccess {
     private DataBaseHandler handler = null;
@@ -71,7 +71,7 @@ public class WriteDataBaseAccess {
     }
 
     //批量添加接口
-    public boolean insertDatas(ArrayList<?> list) {
+    public boolean insertDatas(List<?> list) {
         if (list.isEmpty()) {
             System.out.println("no datas");
             return false;
@@ -85,10 +85,10 @@ public class WriteDataBaseAccess {
         }
     }
 
-    private boolean insertTcNotes(ArrayList<?> notes) {
+    private boolean insertTcNotes(List<?> notes) {
         boolean result = false;
         SQLiteDatabase connection = handler.getWriteConnection(Thread.currentThread().getStackTrace()[2].getMethodName());
-        String sql = "insert into T_Note (firstCloumn,secondCloumn,thirdCloumn,forthCloumn,fiveCloumn) values (?,?,?,?,?)";
+        String sql = "insert into T_Note (firstCloumn,secondCloumn,thirdCloumn,forthCloumn,STATUS) values (?,?,?,?,?)";
         connection.beginTransaction();
         try {
             SQLiteStatement stmt = connection.compileStatement(sql);
@@ -98,7 +98,7 @@ public class WriteDataBaseAccess {
                 stmt.bindString(2, note.getSecondCloumn());
                 stmt.bindString(3, note.getThirdCloumn());
                 stmt.bindString(4, note.getForthCloumn());
-                stmt.bindLong(4, note.getStatus());
+                stmt.bindLong(5, note.getStatus());
                 stmt.execute();
                 stmt.clearBindings();
             }

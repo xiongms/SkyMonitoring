@@ -138,7 +138,7 @@ public class StaticsAgent {
     private static void storePaData(String appAction, String pageInfo, String eventInfo) {
         Message msg = new Message();
         msg.what = appAction == null ? MSG_TYPE_INSERT : MSG_TYPE_INSERT_NOW;
-        msg.obj = new TcNote(null, appAction, pageInfo, eventInfo, null, TcNote.DATA_STATUS_SAVED);
+        msg.obj = new TcNote(null, appAction, pageInfo, eventInfo, "", TcNote.DATA_STATUS_SAVED);
         daoThread.mHandler.sendMessage(msg);
     }
 

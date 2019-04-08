@@ -75,7 +75,9 @@ public class TcHeadrHandle {
 
     }
 
-    /** get AppInfo
+    /**
+     * get AppInfo
+     *
      * @param context
      */
     private static AppInfo getAppInfo(Context context) {
@@ -108,7 +110,9 @@ public class TcHeadrHandle {
         }
     }
 
-    /** get Device Info
+    /**
+     * get Device Info
+     *
      * @param context
      */
     private static DeviceInfo getDeviceInfo(Context context) {
@@ -123,9 +127,12 @@ public class TcHeadrHandle {
         mTelephonyMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (mTelephonyMgr != null) {
 
-            deviceinfo.setDevice_id(mTelephonyMgr.getDeviceId());
-            // android Imei
-            deviceinfo.setImei(mTelephonyMgr.getDeviceId());
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                    || context.checkSelfPermission(Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                deviceinfo.setDevice_id(mTelephonyMgr.getDeviceId());
+                // android Imei
+                deviceinfo.setImei(mTelephonyMgr.getDeviceId());
+            }
         }
 
         // AndroidId
@@ -141,11 +148,11 @@ public class TcHeadrHandle {
 
         deviceinfo.setMac(DeviceUtil.getMacAddress(context));
 
-        deviceinfo.setModel(android.os.Build.MODEL);
+        deviceinfo.setModel(Build.MODEL);
 
         deviceinfo.setOs("Android");
 
-        deviceinfo.setOs_version(android.os.Build.VERSION.RELEASE);
+        deviceinfo.setOs_version(Build.VERSION.RELEASE);
 
         // UniqueId
         String openId = deviceinfo.getDevice_id();
@@ -165,7 +172,9 @@ public class TcHeadrHandle {
 
     }
 
-    /**  get NetWork Info
+    /**
+     * get NetWork Info
+     *
      * @param context
      */
     protected static NetworkInfo getNetWorkInfo(Context context) {
@@ -193,6 +202,7 @@ public class TcHeadrHandle {
 
     /**
      * 获取Location
+     *
      * @param context
      * @return
      */
@@ -209,26 +219,14 @@ public class TcHeadrHandle {
             //如果是Network
             locationProvider = LocationManager.NETWORK_PROVIDER;
         } else {
-
             locationProvider = LocationManager.GPS_PROVIDER;
-
         }
 
-        if (Build.VERSION.SDK_INT > 23) {
-            if (context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                    context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                return locationManager.getLastKnownLocation(locationProvider);
-            }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || context.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || context.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            return locationManager.getLastKnownLocation(locationProvider);
         }
-
-        return locationManager.getLastKnownLocation(locationProvider);
+        return null;
     }
 
 }
